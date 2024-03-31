@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { addGroup } from "../controllers/groupController.js";
+import { addGroup, getGroup } from "../controllers/groupController.js";
 
 const groupRoute = Router();
 
 groupRoute.post('/add', addGroup)
+groupRoute.get('/get/:groupId', getGroup);
 
 export default groupRoute;

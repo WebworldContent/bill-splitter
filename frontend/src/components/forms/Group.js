@@ -3,26 +3,52 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { Button, Chip, Stack, TextField } from "@mui/material";
 import { addGroup } from "../../services/group";
+import useLocalStorage from "../helpers/localStorage";
+import { useNavigate } from "react-router-dom";
 
 export default function GroupForm() {
   const [group, setGroup] = useState({});
   const [member, setMember] = useState([]);
   const [memberName, setMemberName] = useState("");
   const [groupName, setGroupName] = useState("");
+  const { setItem } = useLocalStorage("group");
+  const navigate = useNavigate();
 
   const handleCreateGroup = async () => {
     const filterName = groupName.trim();
-    const groupInfo = { [filterName]: [...member], currency: "IN" }
+    const groupInfo = { [filterName]: [...member], currency: "IN" };
     setGroup(groupInfo);
     try {
-      await addGroup(groupInfo);
+      const {
+        data: {
+          data: { groupId },
+        },
+      } = await addGroup(groupInfo);
+      console.log(groupId);
+      if (groupId) {
+        setItem({ id: groupId });
+      }
+      navigate("/splitter");
     } catch (error) {
       console.error(error);
     }
   };
 
+  const processExistingName = (names) => {
+    const indxVal =
+      parseInt(names[names.length - 1].split("-")[1] || "0", 10) + 1;
+    const updatedName = `${names[names.length - 1].split("-")[0]}-${indxVal}`;
+    return updatedName;
+  };
+
   const onAddMember = () => {
-    setMember((prev) => [...prev, memberName]);
+    const regex = new RegExp(`^${memberName}(-\\d+)?$`);
+    const nameExist = member.filter((person) => regex.test(person));
+    let updatedName = memberName;
+    if (nameExist.length > 0) {
+      updatedName = processExistingName(nameExist);
+    }
+    setMember((prev) => [...prev, updatedName]);
     setMemberName("");
   };
 
@@ -50,7 +76,7 @@ export default function GroupForm() {
               onChange={(event) => setMemberName(event.target.value)}
               required
             />
-            <Button variant="contained" onClick={onAddMember}>
+            <Button variant="contained" onClick={onAddMember} disabled={!memberName.length > 0}>
               Add
             </Button>
           </Stack>
@@ -68,7 +94,7 @@ export default function GroupForm() {
             value="IN"
             disabled
           />
-          <Button variant="contained" size="large" onClick={handleCreateGroup}>
+          <Button variant="contained" size="large" onClick={handleCreateGroup} disabled={!member.length > 0}>
             Create Group
           </Button>
         </Stack>

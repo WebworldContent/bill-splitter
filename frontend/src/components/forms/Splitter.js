@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Checkbox,
@@ -11,7 +11,24 @@ import {
   TextField,
 } from "@mui/material";
 
-export default function SplitterForm() {
+const defaultInfo = {
+  payingMember: "",
+  paymentOf: "",
+  amount: 0,
+};
+
+export default function SplitterForm({ group }) {
+  const [paymentInfo, setPaymentInfo] = useState(defaultInfo);
+
+  const onChange = (event) => {
+    const { name, value } = event.target;
+    setPaymentInfo((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = () => {
+    return;
+  }
+
   return (
     <Stack spacing={5} direction="column" sx={{ margin: 1 }}>
       <FormControl fullWidth>
@@ -19,33 +36,51 @@ export default function SplitterForm() {
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={""}
+          value={paymentInfo.payingMember}
+          name="payingMember"
           label="Payer Person"
-          onChange={() => {}}
+          onChange={onChange}
         >
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          {group.members.map((person) => (
+            <MenuItem key={person} value={person}>
+              {person}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
       <TextField
         id="outlined-basic"
         label="Payment of"
+        name="paymentOf"
+        value={paymentInfo.paymentOf}
         variant="outlined"
+        onChange={onChange}
         required
       />
       <TextField
         id="outlined-basic"
         label="Price"
+        type="number"
+        name="amount"
+        value={paymentInfo.amount}
+        onChange={onChange}
         variant="outlined"
         required
       />
-      <Stack spacing={1} direction="row" sx={{ margin: 1 }} useFlexGap flexWrap="wrap">
-        <FormControlLabel control={<Checkbox />} label="Persion1" />
-        <FormControlLabel control={<Checkbox />} label="Persion2" />
-        <FormControlLabel control={<Checkbox />} label="Persion3" />
+      <Stack
+        spacing={1}
+        direction="row"
+        sx={{ margin: 1 }}
+        useFlexGap
+        flexWrap="wrap"
+      >
+        {group.members
+          .filter((member) => member !== paymentInfo.payingMember)
+          .map((member) => (
+            <FormControlLabel control={<Checkbox />} label={member} />
+          ))}
       </Stack>
-      <Button variant="contained" size="large">
+      <Button variant="contained" size="large" onClick={handleSubmit}>
         Save
       </Button>
     </Stack>
