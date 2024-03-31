@@ -27,7 +27,7 @@ export default function PaymentForm() {
       <Container maxWidth="sm">
         <Box
           component="form"
-          sx={{ bgcolor: "#ebedf7", height: "500px" }}
+          sx={{ bgcolor: "#ebedf7", height: "100%" }}
         >
           <SplitterForm />
         </Box>
