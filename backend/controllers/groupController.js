@@ -1,4 +1,4 @@
-import { addData, getData } from "../models/groupModel.js";
+import { addData, getData, updateData } from "../models/groupModel.js";
 
 export const addGroup = async (req, res) => {
   const data = { ...req.body };
@@ -9,6 +9,20 @@ export const addGroup = async (req, res) => {
     res.status(200).send({
       status: "success",
       data: { groupId: insertedId.toHexString() },
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const addExpenses = async (req, res) => {
+  const { data } = { ...req.body };
+  const { groupId } = req.params;
+  try {
+    await updateData(data, groupId);
+    res.status(200).send({
+      status: "success",
+      data: {},
     });
   } catch (err) {
     console.error(err);

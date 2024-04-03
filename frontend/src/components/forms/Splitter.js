@@ -10,6 +10,9 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
+import { addPaymentInfo } from "../../services/payment";
+import useLocalStorage from "../helpers/localStorage";
+import { addExpenses } from "../../services/group";
 
 const defaultInfo = {
   payingMember: "",
@@ -19,15 +22,43 @@ const defaultInfo = {
 
 export default function SplitterForm({ group }) {
   const [paymentInfo, setPaymentInfo] = useState(defaultInfo);
+  const [splitAmong, setSplitAmong] = useState({});
+  const { getItem } = useLocalStorage("group");
 
   const onChange = (event) => {
     const { name, value } = event.target;
     setPaymentInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    return;
-  }
+  const handleSubmit = async () => {
+    const totalAmount = paymentInfo.amount;
+    const eachShare = (totalAmount / Object.keys(splitAmong).length).toFixed(2);
+    Object.keys(splitAmong).forEach((each) => {
+      splitAmong[each] = eachShare;
+    });
+    setPaymentInfo((prev) => ({ ...prev, members: splitAmong }));
+    try {
+      const { id: groupId } = getItem("group");
+      const {
+        data: {
+          data: { paymentId },
+        },
+      } = await addPaymentInfo({ ...paymentInfo, members: splitAmong });
+
+      await addExpenses(paymentId, groupId);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleCheckbox = (event) => {
+    const { checked, name } = event.target;
+    if (checked) {
+      setSplitAmong((prev) => ({ ...prev, [name]: 0 }));
+    }
+  };
+
+  console.log(paymentInfo);
 
   return (
     <Stack spacing={5} direction="column" sx={{ margin: 1 }}>
@@ -51,6 +82,7 @@ export default function SplitterForm({ group }) {
       <TextField
         id="outlined-basic"
         label="Payment of"
+        placeholder="Restaurent bill"
         name="paymentOf"
         value={paymentInfo.paymentOf}
         variant="outlined"
@@ -74,10 +106,14 @@ export default function SplitterForm({ group }) {
         useFlexGap
         flexWrap="wrap"
       >
+        <h3>Split between:</h3>
         {group.members
           .filter((member) => member !== paymentInfo.payingMember)
           .map((member) => (
-            <FormControlLabel control={<Checkbox />} label={member} />
+            <FormControlLabel
+              control={<Checkbox name={member} onChange={handleCheckbox} />}
+              label={member}
+            />
           ))}
       </Stack>
       <Button variant="contained" size="large" onClick={handleSubmit}>

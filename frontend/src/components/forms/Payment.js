@@ -6,28 +6,34 @@ import { Button, Chip, Stack } from "@mui/material";
 import SplitterForm from "./Splitter";
 import useLocalStorage from "../helpers/localStorage";
 import { getGroup } from "../../services/group";
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from "@mui/material/CircularProgress";
+import { useNavigate } from "react-router-dom";
 
 export default function PaymentForm() {
   const { getItem } = useLocalStorage("group");
   const [group, setGroup] = useState({});
   const [showPayment, setShowPayment] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGroup = async (id) => {
       setIsLoading(true);
       try {
         const {
-          data: { data: incomingData },
+          data: { data: incomingData = "" },
         } = await getGroup(id);
         // const { _id, currency } = incomingData; //uncomment to use data
-        delete incomingData._id;
-        delete incomingData.currency;
-        setGroup({
-          groupName: Object.keys(incomingData)[0],
-          members: incomingData[Object.keys(incomingData)[0]],
-        });
+        if (incomingData) {
+          delete incomingData._id;
+          delete incomingData.currency;
+          setGroup({
+            groupName: Object.keys(incomingData)[0],
+            members: incomingData[Object.keys(incomingData)[0]],
+          });
+        }
+
+        navigate("/");
       } catch (error) {
         console.error(error);
       } finally {
@@ -41,8 +47,6 @@ export default function PaymentForm() {
       fetchGroup(id);
     }
   }, [getItem]);
-
-  console.log(group);
 
   const paymentForm = () => (
     <Stack spacing={6} direction="column" sx={{ margin: 1 }}>
@@ -74,7 +78,9 @@ export default function PaymentForm() {
       <CssBaseline />
       <Container maxWidth="sm">
         {isLoading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}><CircularProgress /></Box>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <CircularProgress />
+          </Box>
         ) : (
           <Box component="form" sx={{ bgcolor: "#ebedf7", height: "100%" }}>
             {!showPayment ? paymentForm() : <SplitterForm group={group} />}
