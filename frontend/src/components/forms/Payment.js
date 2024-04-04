@@ -31,9 +31,9 @@ export default function PaymentForm() {
             groupName: Object.keys(incomingData)[0],
             members: incomingData[Object.keys(incomingData)[0]],
           });
+        } else {
+          navigate("/");
         }
-
-        navigate("/");
       } catch (error) {
         console.error(error);
       } finally {

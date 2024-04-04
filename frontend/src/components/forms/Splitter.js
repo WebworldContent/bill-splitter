@@ -13,6 +13,7 @@ import {
 import { addPaymentInfo } from "../../services/payment";
 import useLocalStorage from "../helpers/localStorage";
 import { addExpenses } from "../../services/group";
+import { useNavigate } from "react-router-dom";
 
 const defaultInfo = {
   payingMember: "",
@@ -24,6 +25,7 @@ export default function SplitterForm({ group }) {
   const [paymentInfo, setPaymentInfo] = useState(defaultInfo);
   const [splitAmong, setSplitAmong] = useState({});
   const { getItem } = useLocalStorage("group");
+  const navigate = useNavigate();
 
   const onChange = (event) => {
     const { name, value } = event.target;
@@ -46,6 +48,7 @@ export default function SplitterForm({ group }) {
       } = await addPaymentInfo({ ...paymentInfo, members: splitAmong });
 
       await addExpenses(paymentId, groupId);
+      navigate("/show-contri");
     } catch (error) {
       console.error(error);
     }
@@ -108,7 +111,6 @@ export default function SplitterForm({ group }) {
       >
         <h3>Split between:</h3>
         {group.members
-          .filter((member) => member !== paymentInfo.payingMember)
           .map((member) => (
             <FormControlLabel
               control={<Checkbox name={member} onChange={handleCheckbox} />}

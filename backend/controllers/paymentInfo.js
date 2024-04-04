@@ -1,4 +1,4 @@
-import { addPaymentInfo } from "../models/paymentInfoModel.js";
+import { addPaymentInfo, getPaymentInfo } from "../models/paymentInfoModel.js";
 
 export const addInfo = async (req, res) => {
   const data = { ...req.body };
@@ -15,13 +15,13 @@ export const addInfo = async (req, res) => {
   }
 };
 
-// export const getInfo = async (req, res) => {
-//   try {
-//     const { groupId } = req.params;
-//     console.log(groupId);
-//     const response = await getPaymentInfo(groupId);
-//     res.status(200).send({ status: "success", data: response });
-//   } catch (err) {
-//     console.error(err);
-//   }
-// };
+export const getInfo = async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    console.log(groupId);
+    const response = await getPaymentInfo(groupId);
+    res.status(200).send({ status: "success", data: response });
+  } catch (err) {
+    console.error(err);
+  }
+};

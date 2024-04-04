@@ -11,7 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<CreateGroup />} />
         <Route path="/splitter" element={<PaymentSplit />} />
-        <Route path="/show-contri" element={<SplitterBill />} />
+        <Route path="/show-contri/:groupId?" element={<SplitterBill />} />
       </Routes>
     </Suspense>
   );
