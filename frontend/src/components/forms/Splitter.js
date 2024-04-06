@@ -14,6 +14,7 @@ import { addPaymentInfo } from "../../services/payment";
 import useLocalStorage from "../helpers/localStorage";
 import { addExpenses } from "../../services/group";
 import { useNavigate } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const defaultInfo = {
   payingMember: "",
@@ -24,6 +25,7 @@ const defaultInfo = {
 export default function SplitterForm({ group }) {
   const [paymentInfo, setPaymentInfo] = useState(defaultInfo);
   const [splitAmong, setSplitAmong] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const { getItem } = useLocalStorage("group");
   const navigate = useNavigate();
 
@@ -33,6 +35,7 @@ export default function SplitterForm({ group }) {
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     const totalAmount = paymentInfo.amount;
     const eachShare = (totalAmount / Object.keys(splitAmong).length).toFixed(2);
     Object.keys(splitAmong).forEach((each) => {
@@ -51,6 +54,8 @@ export default function SplitterForm({ group }) {
       navigate("/show-contri");
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -60,8 +65,6 @@ export default function SplitterForm({ group }) {
       setSplitAmong((prev) => ({ ...prev, [name]: 0 }));
     }
   };
-
-  console.log(paymentInfo);
 
   return (
     <Stack spacing={5} direction="column" sx={{ margin: 1 }}>
@@ -110,16 +113,20 @@ export default function SplitterForm({ group }) {
         flexWrap="wrap"
       >
         <h3>Split between:</h3>
-        {group.members
-          .map((member) => (
-            <FormControlLabel
-              control={<Checkbox name={member} onChange={handleCheckbox} />}
-              label={member}
-            />
-          ))}
+        {group.members.map((member) => (
+          <FormControlLabel
+            control={<Checkbox key={member} name={member} onChange={handleCheckbox} />}
+            label={member}
+          />
+        ))}
       </Stack>
-      <Button variant="contained" size="large" onClick={handleSubmit}>
-        Save
+      <Button
+        variant="contained"
+        size="large"
+        onClick={handleSubmit}
+        disabled={isLoading}
+      >
+        {isLoading ? <CircularProgress /> : "Save"}
       </Button>
     </Stack>
   );

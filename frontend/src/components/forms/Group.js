@@ -7,7 +7,6 @@ import useLocalStorage from "../helpers/localStorage";
 import { useNavigate } from "react-router-dom";
 
 export default function GroupForm() {
-  const [group, setGroup] = useState({});
   const [member, setMember] = useState([]);
   const [memberName, setMemberName] = useState("");
   const [groupName, setGroupName] = useState("");
@@ -17,7 +16,6 @@ export default function GroupForm() {
   const handleCreateGroup = async () => {
     const filterName = groupName.trim();
     const groupInfo = { [filterName]: [...member], currency: "IN" };
-    setGroup(groupInfo);
     try {
       const {
         data: {
