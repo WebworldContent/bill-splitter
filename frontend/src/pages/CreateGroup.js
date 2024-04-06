@@ -9,8 +9,8 @@ export default function CreateGroup() {
     <Container
       sx={{
         display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        justifyContent: "top",
+        alignItems: "top",
         flexDirection: "column",
         height: '100vh'
       }}

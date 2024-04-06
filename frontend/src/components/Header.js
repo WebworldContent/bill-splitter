@@ -17,11 +17,11 @@ export default function Header() {
           sx={{
             display: "flex",
             justifyContent: "center",
-            alignItems: "center",
+            alignItems: "top",
             bgcolor: "#2b4fff",
             height: "100px",
             color: "#fff",
-            marginTop: "900px", // extra css for test, remove in future
+            // marginTop: "900px", // extra css for test, remove in future
           }}
         >
           <h1

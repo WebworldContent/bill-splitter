@@ -52,8 +52,6 @@ export default function GroupForm() {
     setMemberName("");
   };
 
-  console.log(group);
-
   return (
     <Container maxWidth="sm">
       <Box component="form" sx={{ bgcolor: "#ebedf7", height: "100%" }}>
@@ -89,7 +87,6 @@ export default function GroupForm() {
           <TextField
             id="outlined-basic"
             label="Country Currency"
-            defaultValue="IN(Indian)"
             variant="outlined"
             value="IN"
             disabled

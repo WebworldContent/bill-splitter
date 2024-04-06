@@ -37,7 +37,7 @@ export default function ShowContri() {
           const { expenses, currency } = fetchedData[0];
           delete fetchedData[0].expenses;
           delete fetchedData[0].currency;
-          delete fetchedData[0]._id;
+          delete fetchedData[0]._id; 
           const group = fetchedData[0];
           const groupName = Object.keys(group);
           setSplitInfo({
@@ -58,7 +58,7 @@ export default function ShowContri() {
       const dataId = id || hasGroupId
       fetchData(dataId);
     }
-  }, [getItem]);
+  }, [getItem, hasGroupId, id]);
 
   const handleShareBill = async () => {
     const generatedURI = `${window.location.href}/${id}`
@@ -77,7 +77,7 @@ export default function ShowContri() {
     <>
       <CssBaseline />
       <Container maxWidth="sm">
-        <Box component="form" sx={{ bgcolor: "#ebedf7", height: "100%", overflow: 'scroll' }}>
+        <Box component="form" sx={{ bgcolor: "#ebedf7", height: "100%" }}>
           <Stack spacing={5} direction="column" sx={{ margin: 1 }}>
             <div style={{ textAlign: "center", fontFamily: "sans-serif" }}>
               <h2>{splitInfo.groupName}</h2>
@@ -149,7 +149,7 @@ export default function ShowContri() {
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
                       <TableCell component="th" scope="row">
-                        {`${data.payingMember} => ${member}`}
+                        {`${member} => ${data.payingMember}`}
                       </TableCell>
                       <TableCell align="right">{data.members[member]}</TableCell>
                     </TableRow>))}
