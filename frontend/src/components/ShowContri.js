@@ -79,7 +79,8 @@ export default function ShowContri() {
   const navigate = useNavigate();
   const match = useMatch("show-contri/:groupId");
   const hasGroupId = match?.params?.groupId;
-  const { id } = getItem("group");
+  const groupInfo = getItem("group");
+  const { id = null } = groupInfo || {};
 
   useEffect(() => {
     const fetchData = async (id) => {
@@ -116,7 +117,7 @@ export default function ShowContri() {
       const dataId = id || hasGroupId;
       fetchData(dataId);
     }
-  }, [getItem, hasGroupId, id]);
+  }, [getItem, hasGroupId, id, navigate]);
 
   const handleShareBill = async () => {
     const generatedURI = `${window.location.href}/${id}`;

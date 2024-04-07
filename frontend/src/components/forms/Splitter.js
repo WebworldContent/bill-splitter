@@ -26,8 +26,37 @@ export default function SplitterForm({ group }) {
   const [paymentInfo, setPaymentInfo] = useState(defaultInfo);
   const [splitAmong, setSplitAmong] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState({});
   const { getItem } = useLocalStorage("group");
   const navigate = useNavigate();
+
+  const checkError = () => {
+    const errors = {};
+
+    if (!!paymentInfo.paymentOf) {
+      if (!(/^[a-zA-Z\s]+$/.test(paymentInfo.paymentOf))) {
+        errors["paymentOf"] = "error: only characters allowed";
+      }
+    } else {
+      errors["paymentOf"] = "error: cannot be empty";
+    }
+
+    if (!paymentInfo.payingMember) {
+      errors["payingMember"] = "error: no payer selected";
+    }
+
+    if (paymentInfo.amount === 0) {
+      errors["amount"] = "error: cannot be zero";
+    }
+
+    const isError = Object.keys(errors).length > 0;
+
+    if (!isError) {
+      setError({});
+    }
+
+    return { isError, errors };
+  };
 
   const onChange = (event) => {
     const { name, value } = event.target;
@@ -35,6 +64,10 @@ export default function SplitterForm({ group }) {
   };
 
   const handleSubmit = async () => {
+    const { isError, errors } = checkError();
+    setError(errors);
+    if (isError) return;
+
     setIsLoading(true);
     const totalAmount = paymentInfo.amount;
     const eachShare = (totalAmount / Object.keys(splitAmong).length).toFixed(2);
@@ -76,6 +109,8 @@ export default function SplitterForm({ group }) {
           value={paymentInfo.payingMember}
           name="payingMember"
           label="Payer Person"
+          error={!!error.payingMember}
+          helpText={error.payingMember}
           onChange={onChange}
         >
           {group.members.map((person) => (
@@ -93,6 +128,8 @@ export default function SplitterForm({ group }) {
         value={paymentInfo.paymentOf}
         variant="outlined"
         onChange={onChange}
+        error={!!error.paymentOf}
+        helperText={error.paymentOf}
         required
       />
       <TextField
@@ -101,6 +138,8 @@ export default function SplitterForm({ group }) {
         type="number"
         name="amount"
         value={paymentInfo.amount}
+        error={!!error.amount}
+        helperText={error.amount}
         onChange={onChange}
         variant="outlined"
         required
@@ -124,7 +163,7 @@ export default function SplitterForm({ group }) {
         variant="contained"
         size="large"
         onClick={handleSubmit}
-        disabled={isLoading}
+        disabled={isLoading || Object.keys(splitAmong).length === 0}
       >
         {isLoading ? <CircularProgress /> : "Save"}
       </Button>
