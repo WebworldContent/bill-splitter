@@ -8,6 +8,10 @@ const PORT = process.env.PORT || 3001
 app.use(cors());
 app.use(express.json());
 
+app.use('/', (req, res) => {
+    res.send({info: "hello world"});
+});
+
 app.use('/group', groupRoute);
 app.use('/payment', paymentInfoRoute);
 
