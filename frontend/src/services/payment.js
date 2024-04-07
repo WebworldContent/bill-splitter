@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const addPaymentInfo = async(data) => {
     try {
-        return await axios.post(`http://localhost:3001/payment/add`, {
+        return await axios.post(`https://bill-splitter-server.vercel.app/payment/add`, {
             ...data
         });
     } catch (error) {
@@ -12,7 +12,7 @@ export const addPaymentInfo = async(data) => {
 
 export const getPaymentInfo = async(id) => {
     try {
-        return await axios.get(`http://localhost:3001/payment/get/${id}`);
+        return await axios.get(`https://bill-splitter-server.vercel.app/payment/get/${id}`);
     } catch (error) {
         throw new Error(`Error while sending http request: ${error}`);
     }
