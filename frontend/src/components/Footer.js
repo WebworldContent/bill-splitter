@@ -16,7 +16,7 @@ export default function Footer() {
             textAlign: "center",
           }}
         >
-          <h2>All rights reserved by maker.</h2>
+          <h2>All rights reserved</h2>
           <p>@ 2024</p>
         </Box>
       </Container>
