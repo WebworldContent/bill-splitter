@@ -130,8 +130,6 @@ export default function ShowContri() {
     }
   };
 
-  console.log(splitInfo);
-
   return (
     <>
       <CssBaseline />

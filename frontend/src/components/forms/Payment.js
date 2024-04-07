@@ -46,7 +46,7 @@ export default function PaymentForm() {
     if (id) {
       fetchGroup(id);
     }
-  }, [getItem]);
+  }, [getItem, navigate]);
 
   const paymentForm = () => (
     <Stack spacing={6} direction="column" sx={{ margin: 1 }}>

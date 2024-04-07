@@ -96,8 +96,6 @@ export default function GroupForm() {
     setMemberName("");
   };
 
-  console.log(error);
-
   return (
     <Container maxWidth="sm">
       <Box component="form" sx={{ bgcolor: "#ebedf7", height: "100%" }}>
